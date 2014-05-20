@@ -1,0 +1,4 @@
+# Gitignoring
+config.py
+*.swp
+*.pyc
