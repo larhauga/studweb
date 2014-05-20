@@ -1,0 +1,56 @@
+#!/usr/bin/env python
+
+from mechanize import Browser
+from BeautifulSoup import BeautifulSoup
+import re
+import config, parse
+
+def main():
+    br = Browser()
+    br.set_handle_robots(False)
+    br.set_handle_refresh(False)
+    br.addheaders = config.USER_AGENT
+
+    for school in config.SCHOOLS:
+        points, courses = crawl(br, config.BASE_URL + school, school)
+        printstdout(points, courses)
+
+        # Based upon 'studiepoeng' we can find out if there are any new grades.
+        # New grade - old grades => print the new grades (assuming they are on top)
+
+def crawl(br, page, school):
+    response = br.open(page)
+    br.select_form("fnrForm")
+    br.form['fodselsnr'] = config.LOGINID
+    br.form['pinkode']  = config.PIN
+    response = br.submit()  # Submit form and logg in
+
+    if school == "HiOA":
+        response = br.follow_link(text=config.MENUCOL + "Innsyn")        # Press the button "Innsyn"
+        response = br.follow_link(text=config.MENUEXP + "Resultater")    # Press the button "Resultater"
+        br.follow_link(text=config.MENUEXP + 'Logg ut')
+        return parse.parsepage(response.get_data()) # Get the grades
+
+    elif school == "UiO":
+        response = br.follow_link(text=config.MENUCOL + 'Se opplysninger om deg')        # Press the button "Innsyn"
+        response = br.follow_link(text=config.MENUEXP + 'Resultater')    # Press the button "Resultater"
+        br.follow_link(text=config.MENUEXP + 'Logg ut')
+        return parse.parsepage(response.get_data()) # Get the grades
+
+def printstdout(points, courses):
+    # "https://www.studweb.no/as/WebObjects/studentweb2?inst=HiOA"
+    #response = br.open(config.BASE_URL + "UiO") #config.SCHOOLS[0])
+
+    print points
+    #print courses
+    out = parse.course_to_dict(courses)
+    for course in out:
+        if course['name']:
+            print "%s, Grade:\t %s, %s, %s" % (course['name'], course['grade'], course['points'], course['semester'])
+        elif course['grade'] and course['points']:
+            print "Unknown course: %s, %s" % (course['grade'], course['points'])
+
+    print "Average grade: %f" % (parse.average_grade(out))
+
+if __name__ == '__main__':
+    main()
