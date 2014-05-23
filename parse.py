@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+#-*- coding: utf-8 -*-
+
 from BeautifulSoup import BeautifulSoup
 from collections import defaultdict
 import re
