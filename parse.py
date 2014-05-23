@@ -45,6 +45,7 @@ def average_grade(courses, from_year=None, to_year=None):
     gpp = 0
     points = 0
     for course in courses:
+        if config.LIMITCOURSE and not re.compile(config.COURSEREGEX).match(course['course']):
             pass
         elif course['points']:
             gpp += float(grades[course['grade']]) * float(course['points'])
