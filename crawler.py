@@ -26,16 +26,18 @@ def crawl(br, page, school):
     response = br.submit()  # Submit form and logg in
 
     if school == "HiOA":
-        response = br.follow_link(text=config.MENUCOL + "Innsyn")        # Press the button "Innsyn"
-        response = br.follow_link(text=config.MENUEXP + "Resultater")    # Press the button "Resultater"
-        br.follow_link(text=config.MENUEXP + 'Logg ut')
-        return parse.parsepage(response.get_data()) # Get the grades
-
+        menuexpand  = config.MENUCOL + 'Innsyn'
+        selectgrade = config.MENUEXP + 'Resultater'
+        logout = config.MENUEXP + 'Logg ut'
     elif school == "UiO":
-        response = br.follow_link(text=config.MENUCOL + 'Se opplysninger om deg')        # Press the button "Innsyn"
-        response = br.follow_link(text=config.MENUEXP + 'Resultater')    # Press the button "Resultater"
-        br.follow_link(text=config.MENUEXP + 'Logg ut')
-        return parse.parsepage(response.get_data()) # Get the grades
+        menuexpand  = config.MENUCOL + 'Se opplysninger om deg'
+        selectgrade = config.MENUEXP + 'Resultater'
+        logout = config.MENUEXP + 'Logg ut'
+
+    response = br.follow_link(text=menuexpand)  # Press the button "Innsyn"
+    response = br.follow_link(text=selectgrade) # Press the button "Resultater"
+    br.follow_link(text=logout)
+    return parse.parsepage(response.get_data()) # Get the grades
 
 def printstdout(points, courses):
     # "https://www.studweb.no/as/WebObjects/studentweb2?inst=HiOA"
