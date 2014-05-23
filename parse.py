@@ -40,6 +40,7 @@ def create_item_dict(item):
     return c
 
 def average_grade(courses, from_year=None, to_year=None):
+    grades = {'A': 5, 'B': 4, 'C': 3, 'D': 2, 'E': 1 , 'Ikke bestått': 0}
     # <study points> * <grade> + (..repeat..) / <total studypoints>
     gpp = 0
     points = 0
