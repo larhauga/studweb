@@ -19,3 +19,11 @@ LIMITCOURSE = False
 MENUCOL="[+][IMG]\xa0"
 # Menu expanded
 MENUEXP="[ ][IMG]\xa0"
+# Send notification when points are updated
+NOTIFY = True
+# Service to notify your phone with. Valid options "nma"
+NOTIFY_SERVICE = "nma"
+# API key for that service
+NOTIFY_APIKEY = "<key>"
+# Print to stdout
+VERBOSE = True

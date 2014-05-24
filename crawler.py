@@ -4,7 +4,9 @@
 
 from mechanize import Browser
 from BeautifulSoup import BeautifulSoup
+import pushnotify
 import re
+import shelve
 import config, parse
 
 def main():
@@ -13,13 +15,25 @@ def main():
     br.set_handle_refresh(False)
     br.addheaders = config.USER_AGENT
 
+    client = pushnotify.get_client(config.NOTIFY_SERVICE, application='StudWeb')
+    client.add_key(config.NOTIFY_APIKEY)
+    d = shelve.open("results.cache")
+
     for school in config.SCHOOLS:
         points, courses = crawl(br, config.BASE_URL + school, school)
-        printstdout(points, courses)
-
-        # Based upon 'studiepoeng' we can find out if there are any new grades.
-        # New grade - old grades => print the new grades (assuming they are on top)
-
+        if config.VERBOSE:
+            printstdout(points, courses)
+            print "Total points: %s" % points
+        # We have points stored before, so lets see if they are different from what we got now.
+        if d.has_key(school):
+            if d[school] != points:
+                d[school] = points
+                if config.NOTIFY:
+                    client.notify("Exam results are in, latest course: %s, grade: %s" % (courses[0].get('name', "Unknown"), courses[0].get('grade', 'Unknown')), "New exam results")
+        # No points stored before, so let's just store them.
+        else:
+            d[school] = points
+    d.close()
 def crawl(br, page, school):
     response = br.open(page)
     br.select_form("fnrForm")
