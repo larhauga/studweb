@@ -47,14 +47,13 @@ def printstdout(points, courses):
 
     print points
     #print courses
-    out = parse.course_to_dict(courses)
-    for course in out:
+    for course in courses:
         if course['name']:
             print "%s, Grade:\t %s, %s, %s" % (course['name'], course['grade'], course['points'], course['semester'])
         elif course['grade'] and course['points']:
             print "Unknown course: %s, %s" % (course['grade'], course['points'])
 
-    print "Average grade: %f" % (parse.average_grade(out))
+    print "Average grade: %f" % (parse.average_grade(courses))
 
 if __name__ == '__main__':
     main()

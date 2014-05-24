@@ -12,19 +12,10 @@ def parsepage(data):
     courses = []
 
     for tr in soup.findAll(attrs={'class': re.compile(r"pysj\d{1}")}):
-        courses.append([ x.text.strip() if x is not None else '' for x in tr.findAll('td')]) # Parses the table
+        courses.append(create_item_dict([ x.text.strip() if x is not None else '' for x in tr.findAll('td')])) # Parses the table
 
     return points, courses
 
-def course_to_dict(courses):
-    course = []
-    for item in courses:
-        if config.LIMITCOURSE and re.compile(config.COURSEREGEX).match(item[1]):
-            course.append(create_item_dict(item))
-        elif not config.LIMITCOURSE:
-            course.append(create_item_dict(item))
-
-    return course
 
 def create_item_dict(item):
     c = defaultdict(str)
