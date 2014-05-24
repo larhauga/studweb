@@ -21,7 +21,8 @@ MENUCOL="[+][IMG]\xa0"
 MENUEXP="[ ][IMG]\xa0"
 # Send notification when points are updated
 NOTIFY = True
-# Service to notify your phone with. Valid options "nma"
+# Service to notify your phone with. Valid types are 'nma' 'prowl', and 'pushover'
+# for Notify My Android, Prowl, and Pushover clients, respectively.
 NOTIFY_SERVICE = "nma"
 # API key for that service
 NOTIFY_APIKEY = "<key>"
