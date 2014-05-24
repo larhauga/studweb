@@ -6,4 +6,4 @@ grades from multiple schools.
 
 ## Notify My Android
 
-![Notify my android screenshot](http://static.cognitive.io/phone/nma.png)
+![Notify my android screenshot](http://static.cognitive.io/phone/nma_small.png)
