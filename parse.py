@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+#-*- coding: utf-8 -*-
+
 from BeautifulSoup import BeautifulSoup
 from collections import defaultdict
 import re
@@ -38,15 +40,18 @@ def create_item_dict(item):
     return c
 
 def average_grade(courses, from_year=None, to_year=None):
-    grades = {'A': 5, 'B': 4, 'C': 3, 'D': 2, 'E': 1 }
+    grades = {'A': 5, 'B': 4, 'C': 3, 'D': 2, 'E': 1 , 'Ikke bestått': 0}
     # <study points> * <grade> + (..repeat..) / <total studypoints>
     gpp = 0
     points = 0
     for course in courses:
-        if not re.compile(config.COURSEREGEX).match(course['course']):
+        if config.LIMITCOURSE and not re.compile(config.COURSEREGEX).match(course['course']):
             pass
         elif course['points']:
             gpp += float(grades[course['grade']]) * float(course['points'])
             points += float(course['points'])
-
-    return float(gpp / points)
+    try:
+        result = float (gpp/points)
+    except ZeroDivisionError:
+        result = 0
+    return result
