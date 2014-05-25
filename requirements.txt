@@ -1,7 +1,5 @@
 BeautifulSoup==3.2.1
 argparse==1.2.1
-args==0.1.0
 mechanize==0.2.5
 pushnotify==0.5.1
-requests==1.1.0
 wsgiref==0.1.2
