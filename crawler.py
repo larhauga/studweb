@@ -56,6 +56,10 @@ def crawl(br, page, school):
 
     response = br.follow_link(text=menuexpand)   # Press the button "Innsyn"
     response = br.follow_link(text=selectgrade)  # Press the button "Resultater"
+    if config.HIDEFAILED:
+        response = br.select_form(nr=0)
+        br.form['rbVurdFilter'] = ["true"]
+        response = br.submit()
     br.follow_link(text=logout)
     return parse.parsepage(response.get_data())  # Get the grades
 

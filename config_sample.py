@@ -19,6 +19,8 @@ LIMITCOURSE = False
 MENUCOL="[+][IMG]\xa0"
 # Menu expanded
 MENUEXP="[ ][IMG]\xa0"
+# Hide failed classes
+HIDEFAILED = True
 # Send notification when points are updated
 NOTIFY = True
 # Service to notify your phone with. Valid types are 'nma' 'prowl', and 'pushover'
