@@ -3,4 +3,3 @@ argparse==1.2.1
 mechanize==0.2.5
 pushnotify==0.5.1
 wsgiref==0.1.2
-pushnotify==0.5.1
