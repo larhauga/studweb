@@ -22,7 +22,6 @@ def main():
         points, courses = crawl(br, config.BASE_URL + school, school)
         if config.VERBOSE:
             printstdout(points, courses)
-            print "Total points: %s" % points
         # We have points stored before
         # so lets see if they are different from what we got now.
         if school in d:
@@ -65,11 +64,15 @@ def crawl(br, page, school):
 def printstdout(points, courses):
     for course in courses:
         if course['name']:
-            print "%s, Grade:\t %s, %s, %s" % (course['name'], course['grade'], course['points'], course['semester'])
+            print "%s, Grade: %s, %s, %s" % (course['name'], course['grade'], course['points'], course['semester'])
         elif course['grade'] and course['points']:
             print "Unknown course: %s, %s" % (course['grade'], course['points'])
 
-    print "Average grade: %f" % (parse.average_grade(courses))
+    print "Total points: %s" % points
+    # Printing the average grades (and hacking it into lettergrade)
+    grades = {'5':'A', '4':'B', '3':'C', '2':'D', '1':'E', '0':'F'}
+    average = parse.average_grade(courses)
+    print "Average grade: %0.2f == %s" % (average, grades[str(average)[0]])
 
 def notify(new_results):
     if config.NOTIFY_SERVICE == 'email':
