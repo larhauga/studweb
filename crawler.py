@@ -7,6 +7,7 @@ import pushnotify
 import shelve
 import config
 import parse
+import mail
 
 
 def main():
@@ -15,9 +16,6 @@ def main():
     br.set_handle_refresh(False)
     br.addheaders = config.USER_AGENT
 
-    client = pushnotify.get_client(config.NOTIFY_SERVICE,
-                                   application='StudWeb')
-    client.add_key(config.NOTIFY_APIKEY)
     d = shelve.open("results.cache")
 
     for school in config.SCHOOLS:
@@ -31,7 +29,7 @@ def main():
             if d[school] != points:
                 d[school] = points
                 if config.NOTIFY:
-                    client.notify("Exam results are in, latest course: %s, grade: %s" % (courses[0].get('name', "Unknown"), courses[0].get('grade', 'Unknown')), "New exam results")
+                    notify([courses[0]])
         # No points stored before, so let's just store them.
         else:
             d[school] = points
@@ -72,6 +70,19 @@ def printstdout(points, courses):
             print "Unknown course: %s, %s" % (course['grade'], course['points'])
 
     print "Average grade: %f" % (parse.average_grade(courses))
+
+def notify(new_results):
+    if config.NOTIFY_SERVICE == 'email':
+        client = mail.mail()
+    elif config.NOTIFY_SERVICE in ['nma', 'prowl', 'pushover']:
+        client = pushnotify.get_client(config.NOTIFY_SERVICE, application='StudWeb')
+        client.add_key(config.NOTIFY_APIKEY)
+
+    text = "New exam results: "
+    for result in new_results:
+        text = text + "Course: %s, grade: %s; " % \
+                (result.get('name', 'Unknown'), result.get('grade', 'Unknown'))
+    client.notify(text, "New exam results")
 
 if __name__ == '__main__':
     main()
