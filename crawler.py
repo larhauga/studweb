@@ -22,16 +22,26 @@ def main():
         points, courses = crawl(br, config.BASE_URL + school, school)
         if config.VERBOSE:
             printstdout(points, courses)
-        # We have points stored before
-        # so lets see if they are different from what we got now.
+
+        # We have data stored from before
+        # We will check if for new courses
+        # Data format: shelve: school = {points: num, courses: []}
         if school in d:
-            if d[school] != points:
-                d[school] = points
+            new_courses = new_courses(courses, d[school]['courses'])
+            if new_courses:
+                # Update stored courses and points
+                d[school]['courses'] = courses
+                d[school]['points'] = points
+
+                # Notify if new courses and notifications are turned on
                 if config.NOTIFY:
-                    notify([courses[0]])
-        # No points stored before, so let's just store them.
+                    notify(new_courses)
         else:
-            d[school] = points
+            # No data from before. Storing it
+            data = {}
+            data['points'] = points
+            data['courses'] = courses
+            d[school] = data
     d.close()
 
 
@@ -86,6 +96,18 @@ def notify(new_results):
         text = text + "Course: %s, grade: %s; " % \
                 (result.get('name', 'Unknown'), result.get('grade', 'Unknown'))
     client.notify(text, "New exam results")
+
+def new_courses(courses, stored_courses):
+    """
+        Checks for coursecodes allready existing
+        Tobeimplemeted: checking if valid
+    """
+    new = []
+    for course in courses:
+        if not any(c['course'] == course['course'] for c in stored_courses):
+            new.append(course)
+
+    return new
 
 if __name__ == '__main__':
     main()
