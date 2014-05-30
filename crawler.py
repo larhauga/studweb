@@ -8,6 +8,7 @@ import shelve
 import config
 import parse
 import mail
+import re
 
 
 def main():
@@ -27,15 +28,15 @@ def main():
         # We will check if for new courses
         # Data format: shelve: school = {points: num, courses: []}
         if school in d:
-            new_courses = new_courses(courses, d[school]['courses'])
-            if new_courses:
+            c = new_courses(courses, d[school]['courses'])
+            if c:
                 # Update stored courses and points
                 d[school]['courses'] = courses
                 d[school]['points'] = points
 
                 # Notify if new courses and notifications are turned on
                 if config.NOTIFY:
-                    notify(new_courses)
+                    notify(c)
         else:
             # No data from before. Storing it
             data = {}
@@ -73,7 +74,9 @@ def crawl(br, page, school):
 
 def printstdout(points, courses):
     for course in courses:
-        if course['name']:
+        if config.LIMITCOURSE and not re.compile(config.COURSEREGEX).match(course['course']):
+            pass
+        elif course['name']:
             print "%s, Grade: %s, %s, %s" % (course['name'], course['grade'], course['points'], course['semester'])
         elif course['grade'] and course['points']:
             print "Unknown course: %s, %s" % (course['grade'], course['points'])
