@@ -22,7 +22,7 @@ def main():
     for school in config.SCHOOLS:
         points, courses = crawl(br, config.BASE_URL + school, school)
         if config.VERBOSE:
-            printstdout(points, courses)
+            printstdout(school, points, courses)
 
         # We have data stored from before
         # We will check if for new courses
@@ -72,7 +72,8 @@ def crawl(br, page, school):
     return parse.parsepage(response.get_data())  # Get the grades
 
 
-def printstdout(points, courses):
+def printstdout(school, points, courses):
+    print "Courses for %s:" % school
     for course in courses:
         if config.LIMITCOURSE and not re.compile(config.COURSEREGEX).match(course['course']):
             pass
@@ -85,7 +86,7 @@ def printstdout(points, courses):
     # Printing the average grades (and hacking it into lettergrade)
     grades = {'5':'A', '4':'B', '3':'C', '2':'D', '1':'E', '0':'F'}
     average = parse.average_grade(courses)
-    print "Average grade: %0.2f == %s" % (average, grades[str(average)[0]])
+    print "Average grade: %0.2f == %s\n" % (average, grades[str(average)[0]])
 
 def notify(new_results):
     if config.NOTIFY_SERVICE == 'email':
