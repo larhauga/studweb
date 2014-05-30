@@ -28,15 +28,25 @@ def main():
         # We will check if for new courses
         # Data format: shelve: school = {points: num, courses: []}
         if school in d:
-            c = new_courses(courses, d[school]['courses'])
+            try:
+                c = new_courses(courses, d[school]['courses'])
+            except:
+                c = None
             if c:
                 # Update stored courses and points
+                d[school] = {} # Cleaning to be able to update
                 d[school]['courses'] = courses
                 d[school]['points'] = points
 
                 # Notify if new courses and notifications are turned on
                 if config.NOTIFY:
                     notify(c)
+            else:
+                # No data from before. Storing it
+                data = {}
+                data['points'] = points
+                data['courses'] = courses
+                d[school] = data
         else:
             # No data from before. Storing it
             data = {}
@@ -89,6 +99,7 @@ def printstdout(school, points, courses):
     print "Average grade: %0.2f == %s\n" % (average, grades[str(average)[0]])
 
 def notify(new_results):
+    print "Notifying new courses"
     if config.NOTIFY_SERVICE == 'email':
         client = mail.mail()
     elif config.NOTIFY_SERVICE in ['nma', 'prowl', 'pushover']:
@@ -99,7 +110,10 @@ def notify(new_results):
     for result in new_results:
         text = text + "Course: %s, grade: %s; " % \
                 (result.get('name', 'Unknown'), result.get('grade', 'Unknown'))
+        if config.VERBOSE:
+            print "Notiying new course %s" % result['name']
     client.notify(text, "New exam results")
+    print ""
 
 def new_courses(courses, stored_courses):
     """
