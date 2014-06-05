@@ -3,6 +3,7 @@
 
 
 from mechanize import Browser
+import feide_login
 import pushnotify
 import shelve
 import config
@@ -58,10 +59,13 @@ def main():
 
 def crawl(br, page, school):
     response = br.open(page)
-    br.select_form("fnrForm")
-    br.form['fodselsnr'] = config.LOGINID
-    br.form['pinkode'] = config.PIN
-    response = br.submit()  # Submit form and logg in
+    if config.FEIDE:
+        response, br = feide_login.browser_login(br, school)
+    else:
+        br.select_form("fnrForm")
+        br.form['fodselsnr'] = config.LOGINID
+        br.form['pinkode'] = config.PIN
+        response = br.submit()  # Submit form and logg in
 
     if school == "HiOA":
         menuexpand = config.MENUCOL + 'Innsyn'
@@ -74,6 +78,7 @@ def crawl(br, page, school):
 
     response = br.follow_link(text=menuexpand)   # Press the button "Innsyn"
     response = br.follow_link(text=selectgrade)  # Press the button "Resultater"
+
     if config.HIDEFAILED:
         response = br.select_form(nr=0)
         br.form['rbVurdFilter'] = ["true"]
