@@ -4,6 +4,8 @@
 LOGINID         = '<changeme>'
 # Pincode
 PIN             = '<changeme>'
+# Optional feide login: Requires feide.conf. Copy feide_sample
+FEIDE = False
 # Regex of the different course codes which you want to include
 COURSEREGEX     = 'MS\d{3}A|INF\d{4}NSA' # Change me to your courses. Normal regex
 # The schools which should be scraped.
