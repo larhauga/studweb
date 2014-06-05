@@ -26,3 +26,24 @@ Using virtualenv's load in the requirements.txt.
 ```
 pip install -r requirements.txt
 ```
+
+### Login methods
+In the configuration file there are support for two different login methods.
+This includes *feide* login and with personal id and pin code.
+The personal id with pin code are prefered, but feide can be used by setting
+the `FEIDE` variable to *True*. 
+
+Feide login requires an aditional configuration file called **feide.conf**.
+A sample file of this is provided as feide_sample.conf.
+
+## Running it as cron
+On a linux box create a file called something like `/etc/cron.d/studweb` with the
+following content.
+
+```
+# Studweb
+# The first path can be to the virtualenv or /usr/bin/python
+# The second path is to the code repository location and the studweb file
+# This cron is running monday - friday every hour between and including 8 - 16.
+0 8-16 * * 1-5 /path/to/virtualenv/studweb/bin/python /path/to/code/studweb/studweb.py
+```
