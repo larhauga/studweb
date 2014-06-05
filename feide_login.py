@@ -26,7 +26,11 @@ def browser_login(br, school):
     schoollink = school.lower() + '.no'
     user = get_users()
     if user:
-        user = user[school]
+        try:
+            user = user[school]
+        except KeyError:
+            print "No login information for school %s" % school
+            return None, None
     else:
         print "No users specified"
         return None, None
@@ -48,12 +52,21 @@ def browser_login(br, school):
     br.form['feidename'] = user[0]
     br.form['password'] = user[1]
     response = br.submit()
+    br.select_form(nr=0)
+    response = br.submit()
 
     # Testing if we are logged in
     if '<div id="errorframe"><p>Pålogging feilet. Dette kan skyldes feil brukernavn eller passord' in response.get_data():
         print "Login with feide failed. This can be the result of bad username/password, or that your account has expired."
         print "Please check the configuration feide.conf to ensure that correct creditentials are presented"
-        sys.exit(1)
+        return None, None
+
+    if 'For å fullføre innloggingen må du godta at opplysningene' in response.get_data():
+        print "You need to logon in a browser first, to accept that personal information is shared with studweb."
+        return None, None
+    if '<b>Jeg får ikke logget inn</b>' in response.get_data():
+        print "Login was not successfull. Yo may need to login with a browser first."
+        return None, None
 
     # Here we assume that we get a successfull login, and that evrything is in order
     return response, br
