@@ -1,5 +1,6 @@
 # Gitignoring
 config.py
+feide.conf
 *.swp
 *.pyc
 *.cache
