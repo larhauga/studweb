@@ -22,6 +22,8 @@ def main():
 
     for school in config.SCHOOLS:
         points, courses = crawl(br, config.BASE_URL + school, school)
+        if not points:
+            continue
         if config.VERBOSE:
             printstdout(school, points, courses)
 
@@ -61,6 +63,8 @@ def crawl(br, page, school):
     response = br.open(page)
     if config.FEIDE:
         response, br = feide_login.browser_login(br, school)
+        if not response:
+            return None, None
     else:
         br.select_form("fnrForm")
         br.form['fodselsnr'] = config.LOGINID
