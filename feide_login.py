@@ -1,11 +1,12 @@
 #!/usr/bin/env python
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 
 from mechanize import Browser
 from BeautifulSoup import BeautifulSoup
 import sys
 import csv
 import re
+
 
 def get_users():
     try:
@@ -20,6 +21,7 @@ def get_users():
     except IOError as e:
         print "No login information available. Config file is missing: %s" % e
         return None
+
 
 def browser_login(br, school):
     # Getting the username and password
@@ -62,13 +64,15 @@ def browser_login(br, school):
         return None, None
 
     if 'For å fullføre innloggingen må du godta at opplysningene' in response.get_data():
-        print "You need to logon in a browser first, to accept that personal information is shared with studweb."
+        print "You need to logon in a browser first, \
+                to accept that personal information is shared with studweb."
         return None, None
     if '<b>Jeg får ikke logget inn</b>' in response.get_data():
-        print "Login was not successfull. Yo may need to login with a browser first."
+        print("Login was not successfull. Yo may need to login with a browser first.")
         return None, None
 
-    # Here we assume that we get a successfull login, and that evrything is in order
+    # Here we assume that we get a successfull login
+    # and that everything is in order
     return response, br
 
 if __name__ == '__main__':
