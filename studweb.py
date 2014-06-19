@@ -92,21 +92,21 @@ def crawl(br, page, school):
 
 
 def printstdout(school, points, courses):
-    print "Courses for %s:" % school
+    print "Courses for %s:" % school.encode('utf-8')
     for course in courses:
         if config.LIMITCOURSE and not \
                 re.compile(config.COURSEREGEX).match(course['course']):
             pass
         elif course['name']:
-            print "%s, Grade: %s, %s, %s" % (course['name'],
-                                             course['grade'],
-                                             course['points'],
-                                             course['semester'])
+            print "%s, Grade: %s, %s, %s" % (course['name'].encode('utf-8'),
+                                             course['grade'].encode('utf-8'),
+                                             course['points'].encode('utf-8'),
+                                             course['semester'].encode('utf-8'))
         elif course['grade'] and course['points']:
-            print "Unknown course: %s, %s" % (course['grade'],
-                                              course['points'])
+            print "Unknown course: %s, %s" % (course['grade'].encode('utf-8'),
+                                              course['points'].encode('utf-8'))
 
-    print "Total points: %s" % points
+    print "Total points: %s" % points.encode('utf-8')
     # Printing the average grades (and hacking it into lettergrade)
     grades = {'5': 'A', '4': 'B', '3': 'C', '2': 'D', '1': 'E', '0': 'F'}
     average = parse.average_grade(courses)
