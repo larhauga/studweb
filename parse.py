@@ -41,8 +41,11 @@ def average_grade(courses, from_year=None, to_year=None):
         if config.LIMITCOURSE and not re.compile(config.COURSEREGEX).match(course['course']):
             pass
         elif course['points']:
-            gpp += float(grades[course['grade']]) * float(course['points'])
-            points += float(course['points'])
+            try:
+                gpp += float(grades[course['grade']]) * float(course['points'])
+                points += float(course['points'])
+            except KeyError:
+                pass
     try:
         result = float(gpp / points)
     except ZeroDivisionError:
